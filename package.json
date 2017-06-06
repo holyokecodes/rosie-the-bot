@@ -1,28 +1,36 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-
-  "name": "my-glitch-app",
-  "version": "0.0.1",
-  "description": "What am I about?",
-  "main": "server.js",
+  "name": "botkit-starter-web",
+  "version": "0.0.2",
+  "description": "A starter kit for building a custom bot for your website with Botkit Studio",
+  "main": "bot.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node bot.js"
   },
   "dependencies": {
-    "express": "^4.15.2"
+    "body-parser": "^1.15.2",
+    "botkit": "git+https://git@github.com/howdyai/botkit.git#dev/webchannel",
+    "botkit-storage-mongo": "^1.0.6",
+    "debug": "^2.3.3",
+    "express": "^4.14.0",
+    "node-env-file": "^0.1.8",
+    "querystring": "^0.2.0",
+    "request": "^2.79.0",
+    "wordfilter": "^0.2.6"
   },
-  "engines": {
-    "node": "6.10.x"
-  },
+  "devDependencies": {},
   "repository": {
-    "url": "https://glitch.com/edit/#!/welcome-project"
+    "type": "git",
+    "url": "https://github.com/howdyai/botkit-starter-web.git"
   },
-  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/howdyai/botkit-starter-web/issues"
+  },
+  "homepage": "https://github.com/howdyai/botkit-starter-web",
   "keywords": [
-    "node",
-    "glitch",
-    "express"
-  ]
+    "bots",
+    "chatbots",
+    "web chat"
+  ],
+  "author": "ben@howdy.ai",
+  "license": "ISC"
 }
