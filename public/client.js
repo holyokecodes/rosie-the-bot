@@ -1,4 +1,4 @@
-
+    var converter = new showdown.Converter(),
 
     var messenger = {
         config: {
@@ -168,13 +168,14 @@
             that.on('received', function(message) {
 
                 that.clearReplies();
-                if (message.attachments && message.attachments.quick_replies) {
+                console.log(message);
+                if (message.quick_replies) {
 
-                    for (var r = 0; r < message.attachments.quick_replies.length; r++) {
+                    for (var r = 0; r < message.quick_replies.length; r++) {
                         (function(reply) {
 
                             var el = document.createElement('a');
-                            el.innerHTML = reply.text;
+                            el.innerHTML = reply.title;
                             el.href = '#';
 
                             el.onclick = function() {
@@ -183,7 +184,7 @@
 
                             that.replies.appendChild(el);
 
-                        })(message.attachments.quick_replies[r]);
+                        })(message.quick_replies[r]);
 
                     }
                 }
