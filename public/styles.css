@@ -74,6 +74,10 @@ html,body {
     max-width: 75%;
 }
 
+.message p {
+  margin: 0;
+}
+
 .message.outgoing {
     float: right;
 }

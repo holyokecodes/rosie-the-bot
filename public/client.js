@@ -1,4 +1,4 @@
-    var converter = new showdown.Converter(),
+    var converter = new showdown.Converter();
 
     var messenger = {
         config: {
@@ -17,7 +17,14 @@
             var event = new CustomEvent(event, {detail: details});
             this.message_window.dispatchEvent(event);
         },
-
+        makeMessage: function(message) {
+          
+            message.text = converter.makeHtml(message.text);          
+            var text = this.message_template({message: message});
+            return text;
+          
+          
+        },
         send: function(text,e) {
             if (e) e.preventDefault();
 
@@ -26,7 +33,7 @@
             this.clearReplies();
 
             var el = document.createElement('div');
-            el.innerHTML = this.message_template({message: message});
+            el.innerHTML = this.makeMessage(message);
             this.message_list.appendChild(el);
 
             this.socket.send(JSON.stringify({
@@ -158,7 +165,7 @@
                     that.next_line = document.createElement('div');
                     that.message_list.appendChild(that.next_line);
                 }
-                that.next_line.innerHTML = that.message_template({message: message});
+                that.next_line.innerHTML = that.makeMessage(message);
                 delete(that.next_line);
 
 
