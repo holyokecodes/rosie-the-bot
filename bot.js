@@ -31,6 +31,7 @@ var debug = require('debug')('botkit:main');
 var bot_options = {
     studio_token: process.env.studio_token,
     studio_command_uri: process.env.studio_command_uri,
+    replyWithTyping: false,
 };
 
 // Use a mongo database if specified, otherwise store in a JSON file local to the app.
@@ -70,13 +71,16 @@ console.log('I AM ONLINE! COME TALK TO ME: http://localhost:' + process.env.PORT
 // controller.studio.before, controller.studio.after and controller.studio.validate
 if (process.env.studio_token) {
     controller.on('message_received', function(bot, message) {
-        controller.studio.runTrigger(bot, message.text, message.user, message.channel).then(function(convo) {
+        controller.studio.runTrigger(bot, message.text, message.user, message.channel, message).then(function(convo) {
             if (!convo) {
+              // web bot requires a response of some kind!
+              bot.reply(message,'OK');
+
                 // no trigger was matched
                 // If you want your bot to respond to every message,
                 // define a 'fallback' script in Botkit Studio
                 // and uncomment the line below.
-                // controller.studio.run(bot, 'fallback', message.user, message.channel);
+                // controller.studio.run(bot, 'fallback', message.user, message.channel, message);
             } else {
                 // set variables here that are needed for EVERY script
                 // use controller.studio.before('script') to set variables specific to a script

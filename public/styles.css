@@ -25,6 +25,20 @@ html,body {
 #message_window.connected .disconnected {
     display: none;
 }
+#message_window .offline {
+    display: none;
+}
+#message_window.offline .disconnected {
+  display: none;
+}
+#message_window.offline .offline {
+  background: #FF0000;
+  color: #FFF;
+  padding: 0.25rem;
+  display: block;
+}
+
+
 #message_window section {
     flex-grow:  1;
     flex-direction: column-reverse;
@@ -75,7 +89,12 @@ html,body {
 }
 
 .message p {
-  margin: 0;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.message p:last-child {
+    margin-bottom: 0;
 }
 
 .message.outgoing {
