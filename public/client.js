@@ -25,7 +25,35 @@
         });
         this.message_window.dispatchEvent(event);
       },
+      request: function(url, body) {
+        that = this;
+        return new Promise(function(resolve, reject) {
+          var xmlhttp = new XMLHttpRequest();
 
+          xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+              if (xmlhttp.status == 200) {
+                var response = xmlhttp.responseText;
+                var message = null;
+                try {
+                  message = JSON.parse(response);
+                } catch (err) {
+                  reject(err);
+                  return;
+                }
+                resolve(message);
+              } else {
+                reject(new Error('status_' + xmlhttp.status));
+              }
+            }
+          };
+
+          xmlhttp.open("POST", url, true);
+          xmlhttp.setRequestHeader("Content-Type", "application/json");
+          xmlhttp.send(JSON.stringify(body));
+        });
+
+      },
       send: function(text, e) {
         if (e) e.preventDefault();
         if (!text) {
@@ -36,14 +64,15 @@
           text: text
         };
 
-        this.clearReplies();
 
-        var el = document.createElement('div');
-        message.html = converter.makeHtml(message.text);
-        el.innerHTML = this.message_template({
-          message: message
-        });
-        this.message_list.appendChild(el);
+        // var el = document.createElement('div');
+        // message.html = converter.makeHtml(message.text);
+        // el.innerHTML = this.message_template({
+        //   message: message
+        // });
+        // this.message_list.appendChild(el);
+        this.clearReplies();
+        that.renderMessage(message);
 
         if (this.options.use_sockets) {
           this.socket.send(JSON.stringify({
@@ -67,31 +96,28 @@
 
         return false;
       },
+      getHistory: function(guid) {
+        that = this;
+        if (that.guid) {
+          that.request('/botkit/history',{user: that.guid}).then(function(history) {
+            if (history.success) {
+              that.trigger('history_loaded', history.history);
+            } else {
+              that.trigger('history_error', new Error(history.error));
+            }
+          }).catch(function(err) {
+            that.trigger('history_error', err);
+          });
+        }
+      },
       webhook: function(message) {
         that = this;
-        var xmlhttp = new XMLHttpRequest();
 
-        xmlhttp.onreadystatechange = function() {
-          if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlhttp.status == 200) {
-              var response = xmlhttp.responseText;
-              var message = null;
-              try {
-                message = JSON.parse(response);
-              } catch (err) {
-                that.trigger('webhook_error', err);
-                return;
-              }
-              that.trigger(message.type, message);
-            } else {
-              that.trigger('webhook_error', new Error('status_' + xmlhttp.status));
-            }
-          }
-        };
-
-        xmlhttp.open("POST", "/botkit/receive", true);
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
-        xmlhttp.send(JSON.stringify(message));
+        that.request('/botkit/receive', JSON.stringify(message)).then(function(message) {
+          that.trigger(message.type, message);
+        }).catch(function(err) {
+          that.trigger('webhook_error', err);
+        });
 
       },
       connectWebhook: function() {
@@ -103,6 +129,8 @@
           that.guid = guid();
           setCookie('guid', that.guid, 1);
         }
+
+        that.getHistory();
 
         // connect immediately
         that.trigger('connected', {});
@@ -126,6 +154,8 @@
           that.guid = guid();
           setCookie('guid', that.guid, 1);
         }
+
+        that.getHistory();
 
         // Connection opened
         that.socket.addEventListener('open', function(event) {
@@ -178,6 +208,20 @@
       focus: function() {
         this.input.focus();
       },
+      renderMessage: function(message) {
+          if (!that.next_line) {
+                that.next_line = document.createElement('div');
+                that.message_list.appendChild(that.next_line);
+          }
+          if (message.text) {
+            message.html = converter.makeHtml(message.text);
+          }
+
+          that.next_line.innerHTML = that.message_template({message: message});
+          if (!message.isTyping) {
+            delete(that.next_line);
+          }
+      },
       boot: function() {
 
         console.log('Booting up');
@@ -218,15 +262,9 @@
 
         that.on('typing', function() {
           that.clearReplies();
-          if (!that.next_line) {
-            that.next_line = document.createElement('div');
-            that.next_line.innerHTML = that.message_template({
-              message: {
-                isTyping: true
-              }
-            });
-            that.message_list.appendChild(that.next_line);
-          }
+          that.renderMessage({
+              isTyping: true
+          });
         });
 
         that.on('sent', function() {
@@ -244,15 +282,8 @@
         });
 
         that.on('message', function(message) {
-          if (!that.next_line) {
-            that.next_line = document.createElement('div');
-            that.message_list.appendChild(that.next_line);
-          }
-          message.html = converter.makeHtml(message.text);
-          that.next_line.innerHTML = that.message_template({
-            message: message
-          });
-          delete(that.next_line);
+
+          that.renderMessage(message);
 
         });
 
@@ -274,6 +305,17 @@
                 that.replies.appendChild(el);
 
               })(message.quick_replies[r]);
+            }
+          }
+        });
+
+        that.on('history_loaded', function(history) {
+          if (history) {
+            for (var m = 0; m < history.length; m++) {
+              that.renderMessage({
+                text: history[m].text,
+                type: history[m].type == 'message_received' ? 'outgoing' : 'incoming', // set appropriate CSS class
+              });
             }
           }
         });
