@@ -31,14 +31,16 @@ var debug = require('debug')('botkit:main');
 var bot_options = {
     studio_token: process.env.studio_token,
     studio_command_uri: process.env.studio_command_uri,
+    studio_stats_uri: process.env.studio_command_uri,
     replyWithTyping: false,
 };
 
 // Use a mongo database if specified, otherwise store in a JSON file local to the app.
 // Mongo is automatically configured when deploying to Heroku
 if (process.env.MONGO_URI) {
-    var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_URI});
-    bot_options.storage = mongoStorage;
+  // create a custom db access method
+  var db = require(__dirname + '/components/database.js')({});
+  bot_options.storage = db;
 } else {
     bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
 }
@@ -48,6 +50,18 @@ var controller = Botkit.socketbot(bot_options);
 
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
 var webserver = require(__dirname + '/components/express_webserver.js')(controller);
+
+
+
+// Load in some helpers that make running Botkit on Glitch.com better
+require(__dirname + '/components/plugin_glitch.js')(controller);
+
+// Load in a plugin that defines the bot's identity
+require(__dirname + '/components/plugin_identity.js')(controller);
+
+// enable advanced botkit studio metrics
+// and capture the metrics API to use with the identity plugin!
+controller.metrics = require('botkit-studio-metrics')(controller);
 
 // Open the web socket server
 controller.openSocketServer(controller.httpserver);
@@ -61,7 +75,7 @@ require("fs").readdirSync(normalizedPath).forEach(function(file) {
   require("./skills/" + file)(controller);
 });
 
-console.log('I AM ONLINE! COME TALK TO ME: http://localhost:' + process.env.PORT)
+console.log('I AM ONLINE! COME TALK TO ME: http://localhost:' + (process.env.PORT || 3000))
 
 // This captures and evaluates any message sent to the bot as a DM
 // or sent to the bot in the form "@bot message" and passes it to
@@ -85,6 +99,7 @@ if (process.env.studio_token) {
                 // set variables here that are needed for EVERY script
                 // use controller.studio.before('script') to set variables specific to a script
                 convo.setVar('current_time', new Date());
+                convo.setVar('bot', controller.studio_identity);
             }
         }).catch(function(err) {
             bot.reply(message, 'I experienced an error with a request to Botkit Studio: ' + err);
