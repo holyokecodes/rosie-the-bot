@@ -150,7 +150,8 @@ a.button {
   #message_window #message_template {
     display: none; }
   #message_window .message {
-    padding: 1rem;
+    font-size: 14px;
+    padding: 0.5rem;
     background: #FFF;
     border-radius: 5px;
     width: auto;
@@ -183,8 +184,33 @@ a.button {
       margin: 0.5rem;
       border: 1px solid blue;
       border-radius: 16px;
-      padding: 0.5rem 1rem; }
+      padding: 0.25rem 1rem;
+      font-size: 14px; }
 
+/* typing indicator CSS based on code by Joseph Fusco -> https://codepen.io/fusco/pen/XbpaYv */
+.typing-indicator {
+  display: table;
+  margin: 0 auto;
+  position: relative; }
+  .typing-indicator span {
+    height: 5px;
+    width: 5px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9E9EA1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4; }
+    .typing-indicator span:nth-of-type(1) {
+      animation: 1s blink infinite 0.3333s; }
+    .typing-indicator span:nth-of-type(2) {
+      animation: 1s blink infinite 0.6666s; }
+    .typing-indicator span:nth-of-type(3) {
+      animation: 1s blink infinite 0.9999s; }
+
+@keyframes blink {
+  50% {
+    opacity: 1; } }
 /* special styles for homepage */
 #home {
   position: relative; }

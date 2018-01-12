@@ -73,7 +73,8 @@ $action_color: orange;
   }
 
   .message {
-      padding: 1rem;
+      font-size: 14px;
+      padding: 0.5rem;
       background: #FFF;
       border-radius: 5px;
       width: auto;
@@ -118,7 +119,38 @@ $action_color: orange;
          margin: 0.5rem;
          border: 1px solid blue;
          border-radius: 16px;
-         padding: 0.5rem 1rem;
+         padding: 0.25rem 1rem;
+         font-size: 14px;
      }
    }
+}
+
+
+
+/* typing indicator CSS based on code by Joseph Fusco -> https://codepen.io/fusco/pen/XbpaYv */
+.typing-indicator {
+  display: table;
+  margin: 0 auto;
+  position: relative;
+  span {
+    height: 5px;
+    width: 5px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9E9EA1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+    @for $i from 1 through 3 {
+      &:nth-of-type(#{$i}) {
+        animation: 1s blink infinite ($i * .3333s);
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
 }
