@@ -13,13 +13,13 @@ module.exports = function(controller) {
         convo.setVar('bot',convo.context.bot.identity);
 
         // if learning mode is not enabled, redirect to an error
-        if (!process.env.LEARNING_MODE) {
+        if (process.env.LEARNING_MODE!=='true') {
             convo.gotoThread('error_not_enabled')
         }
         next();
     });
 
-    if (process.env.LEARNING_MODE) {
+    if (process.env.LEARNING_MODE=='true') {
         console.log('--------------------------------------------');
         console.log('> LEARNING MODE ENABLED!');
         console.log('> This bot can modify itself! Disable learning mode in production!!')
@@ -29,6 +29,11 @@ module.exports = function(controller) {
 
           // get original input
           var trigger = convo.source_message.text;
+
+          // sanitize the trigger text a bit
+          // remove punctuation at the end of the sentence.
+          // allow users to exclude punctuation in real life.
+          trigger = trigger.replace(/(\?|\!|\.)*$/,'').toLowerCase();
 
           // get reply
           var text = convo.extractResponse('response_text');
