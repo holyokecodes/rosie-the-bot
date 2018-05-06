@@ -281,7 +281,7 @@ a.button {
 #welcome {
   margin-left: 440px; }
 
-#message_window .events-table tr:nth-child(even) {
+#message_window .events-table tr:nth-child(even), #message_window .events-table th tr {
   background: #EEEEEE; 
 }
 #message_window .events-table tr:nth-child(odd) {
@@ -289,12 +289,14 @@ a.button {
 }
 
 #message_window .events-table td {
-  padding: 10px 0px;
+  padding: 10px 0px 10px 5px;
   font-size: 13px;
 }
-#message_wth.event-age
-#message_window .events-table td:last-child {
+#message_window .events-table th.event-age {
   width: 40px;
+}
+#message_window .events-table td:last-child {
+  text-align: center;
 }
 
 
