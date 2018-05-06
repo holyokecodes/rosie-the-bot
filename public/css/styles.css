@@ -281,10 +281,20 @@ a.button {
 #welcome {
   margin-left: 440px; }
 
+#message_window .events-table tr:nth-child(even) {
+  background: #EEEEEE; 
+}
+#message_window .events-table tr:nth-child(odd) {
+  background: #FFFFFF;
+}
 
 #message_window .events-table td {
   padding: 10px 0px;
   font-size: 13px;
+}
+#message_wth.event-age
+#message_window .events-table td:last-child {
+  width: 40px;
 }
 
 
