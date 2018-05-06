@@ -281,6 +281,17 @@ a.button {
 #welcome {
   margin-left: 440px; }
 
+#message_header {
+  background-color: #fff;
+  border: 5px solid #225fb3;
+  color: #225fb3;
+  font-family: Helvatica Neue;
+}
+
+#message_header img {
+  width: 25px;
+}
+
 #message_window .events-table tr:nth-child(even), #message_window .events-table th tr {
   background: #EEEEEE; 
 }
