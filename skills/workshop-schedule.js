@@ -1,31 +1,24 @@
-var request = require('request');
-var cheerio = require('cheerio');
-
+const request = require('request');
+const cheerio = require('cheerio');
 
 
 module.exports = function(controller) {
 
 
-  controller.hears('test','message_received', function(bot, message) {
+  controller.hears('Workshop schedule','message_received', function(bot, message) {
 
-    
-    bot.reply(message,'I heard a test');
+    const url = 'https://holyokecodes.org/events';
 
-  });
+    request(url, function(error, response, html){
+      if(!error){
+          var $ = cheerio.load(html);
+          $('.events-table').filter(function(){
+              var data = $(this).parent();
+              bot.reply(message, data.html());
+          })
+      }
+    })
 
-  controller.hears('typing','message_received', function(bot, message) {
-
-    bot.reply(message,{
-      text: 'This message used the automatic typing delay',
-      typing: true,
-    }, function() {
-
-      bot.reply(message,{
-        text: 'This message specified a 5000ms typing delay',
-        typingDelay: 5000,
-      });
-
-    });
 
   });
 
