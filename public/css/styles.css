@@ -281,4 +281,11 @@ a.button {
 #welcome {
   margin-left: 440px; }
 
+
+#message_window .events-table td {
+  padding: 10px 0px;
+  font-size: 13px;
+}
+
+
 /*# sourceMappingURL=styles.css.map */
