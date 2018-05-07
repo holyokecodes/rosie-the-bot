@@ -4,6 +4,7 @@
   bottom: -400px;
   right: 2rem;
   height: 450px;
+  width: 350px;
   transition: 0.5s ease-in-out bottom; }
   #embedded_messenger.active {
     bottom: 0; }
