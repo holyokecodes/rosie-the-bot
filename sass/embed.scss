@@ -8,7 +8,7 @@ $height: 400px;
   bottom: -$height;
   right: 2rem;
 
-  height: $height + 34;
+  height: $height + 50;
   transition: 0.5s ease-in-out bottom;
 
   &.active {

@@ -3,7 +3,7 @@
   z-index: 1000;
   bottom: -400px;
   right: 2rem;
-  height: 434px;
+  height: 450px;
   transition: 0.5s ease-in-out bottom; }
   #embedded_messenger.active {
     bottom: 0; }
@@ -24,7 +24,7 @@
 }
 
 #message_header img {
-  width: 25px;
+  width: 40px;
   margin-right: 10px;
 }
 /*# sourceMappingURL=embed.css.map */
