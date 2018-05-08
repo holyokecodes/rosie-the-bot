@@ -13,6 +13,10 @@ module.exports = function(controller) {
               convo.gotoThread('welcome_back');
           })
       });
+      
+      controller.on('summer_programs', function(bot, message) {
+          controller.studio.run(bot, 'summer_programs', message.user, message.channel, message);
+      });
 
       controller.studio.before('welcome_user', function(convo, next) {
           convo.setVar('bot', controller.studio_identity);

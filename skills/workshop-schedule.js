@@ -28,8 +28,8 @@ module.exports = function(controller) {
           var $ = cheerio.load(html);
           $('.entry-content ul').filter(function(){
               var data = $(this);
-              var resp = "<p>Our upcoming summer progra
-              bot.reply(message, data.html());
+              var resp = "<p>Our upcoming summer programs are:</p>" + data.html();
+              bot.reply(message, resp);
           })
       }
     })
