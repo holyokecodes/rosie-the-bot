@@ -18,8 +18,21 @@ module.exports = function(controller) {
           })
       }
     })
+  });
+  controller.hears('Summer programs','message_received', function(bot, message) {
 
+    const url = 'https://holyokecodes.org/events/categories/summer-program/';
 
+    request(url, function(error, response, html){
+      if(!error){
+          var $ = cheerio.load(html);
+          $('.entry-content ul').filter(function(){
+              var data = $(this);
+              var resp = "<p>Our upcoming summer progra
+              bot.reply(message, data.html());
+          })
+      }
+    })
   });
 
 }
