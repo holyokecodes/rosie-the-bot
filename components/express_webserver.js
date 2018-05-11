@@ -3,12 +3,21 @@ var bodyParser = require('body-parser');
 var querystring = require('querystring');
 var debug = require('debug')('botkit:webserver');
 var http = require('http');
+var https = require('https');
 var fs = require('fs');
 var hbs = require('express-hbs');
 
 
 module.exports = function(controller) {
 
+    var privateKey, certificate;
+    try {
+        privateKey = fs.readFileSync('certs/privkey.pem', 'utf8');
+        certificate = fs.readFileSync('certs/cert.pem', 'utf8');
+    } catch (err) {
+        console.log("There was an error reading the SSL certificate: " + err);
+    }
+    var credentials = {key: privateKey, cert: certificate};
 
     var webserver = express();
     webserver.use(bodyParser.json());
@@ -29,13 +38,17 @@ module.exports = function(controller) {
 
     webserver.use(express.static('public'));
 
-    var server = http.createServer(webserver);
+    /*var server = http.createServer(webserver);
 
     server.listen(process.env.PORT || 3000, null, function() {
-
         debug('Express webserver configured and listening at http://localhost:' + process.env.PORT || 3000);
-
     });
+    */
+
+    var httpsServer = https.createServer(credentials, webserver);
+    httpsServer.listen(3443, function() {
+        debug('Express webserver configure and listening on port 3443');
+    })
 
     // TODO: Does this call to identify really belong here?
     if (controller.config.studio_token) {
@@ -58,7 +71,7 @@ module.exports = function(controller) {
     }
 
     controller.webserver = webserver;
-    controller.httpserver = server;
+    controller.httpserver = httpsServer;
 
     return webserver;
 

@@ -6,3 +6,4 @@ components/routes/_*
 .DS_Store
 .viminfo
 .config
+certs
